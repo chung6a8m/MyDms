@@ -1,6 +1,6 @@
 # Evidence handling
 
-**No MyDms runtime evidence has been approved.**
+**No MyDms runtime evidence has been approved.** Foundation tests can record public non-sensitive synthetic counters, checked-out merge SHA and source PR SHA, but not tenant/provider/ledger data.
 
 This directory may contain **metadata-only** evidence of CI and safe synthetic tests. Do not commit raw SQL backups, keys, customer data, physical device journals, personal records, provider invoices or privileged logs.
 

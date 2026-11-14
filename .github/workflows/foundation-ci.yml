@@ -34,13 +34,22 @@ jobs:
       - name: Build
         run: dotnet build MyDms.slnx -c Release --no-restore
       - name: Unit tests (no skipped cases permitted)
-        run: dotnet test tests/Unit/MyDms.UnitTests/MyDms.UnitTests.csproj -c Release --no-build --logger trx --results-directory artifacts/unit
+        run: dotnet test tests/Unit/MyDms.UnitTests/MyDms.UnitTests.csproj -c Release --no-build --logger "trx;LogFileName=foundation-unit.trx" --results-directory artifacts/unit
+      - name: Verify non-skipped unit tests and capture synthetic evidence
+        env:
+          MYDMS_SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          MYDMS_CHECKOUT_SHA: ${{ github.sha }}
+        run: |
+          node --test tests/ci/unit-trx-validator.test.mjs
+          node tools/ci/verify-unit-trx.mjs artifacts/unit/foundation-unit.trx
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: unit-test-evidence
-          path: artifacts/unit/*.trx
-          if-no-files-found: warn
+          path: |
+            artifacts/unit/foundation-unit.trx
+            artifacts/ci/foundation-unit-metadata.json
+          if-no-files-found: error
           retention-days: 7
   architecture:
     name: architecture-boundary
@@ -64,7 +73,9 @@ jobs:
         with:
           node-version: '22.16.0'
           cache: npm
-      - run: npm ci --no-audit --fund=false
+      - run: npm ci --fund=false
+      - name: Audit dependency graph (high/critical fails CI)
+        run: npm audit --audit-level=high
       - run: npm run typecheck
       - run: npm run test:unit
       - run: npm run build
@@ -85,5 +96,5 @@ jobs:
         with:
           name: sql-infra-evidence
           path: artifacts/ci/sql-infra-smoke.json
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 7

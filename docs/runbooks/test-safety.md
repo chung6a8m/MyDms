@@ -2,10 +2,10 @@
 
 ## Guardrails
 - Repository visibility is **public** and source license is **MIT (Owner Q01 v2)**; CI must remain least-privilege (`contents: read`). Public job logs/artifacts must not disclose secrets, real NPP/Customer data, raw invoices or restricted evidence.
-- CI creates **only disposable synthetic SQL** on GitHub hosted runner. There must be no production endpoint, provider token or customer source file.
+- CI creates **only disposable synthetic SQL** on GitHub hosted runner, with test evidence limited to non-sensitive counters, source/checkout SHA, safe SQL image identifiers and synthetic fixtures. There must be no production endpoint, provider token or customer source file.
 - `MYDMS_SQL_TEST_DISPOSABLE=YES` is mandatory for SQL scripts; script rejects non-GitHub execution by default. No external `SQL_CONNECTION_STRING` is read by the fixture.
 - SQL Server container bound only to loopback; password generated in runner memory, not in Git, logs or artifacts. Cleanup uses `trap`, including on failure.
-- CI `sql-smoke` proves only SQL service availability, **not** stock/ledger/ACK or Product Verification.
+- CI `sql-smoke` proves only SQL service availability, **not** stock/ledger/ACK or Product Verification. C# TRX must show executed tests > 0 and no skipped/failing tests; npm audit must not be disabled by install flags.
 - Network access to invoice/accounting providers is out of scope and disabled by policy until explicit sandbox approval.
 - No production secrets in CI. Raw evidence store, retention, role assignments and fault-injection safety plan require real Owner/QA/Ops/Security review (B04 still partially pending).
 
