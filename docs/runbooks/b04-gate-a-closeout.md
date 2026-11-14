@@ -6,7 +6,7 @@
 
 - Public, synthetic-only B04 contract and [validation](../../tools/evidence/check-public-synthetic.mjs) remain separate from real R010 S3 evidence.
 - [Gate A pending template](../../fixtures/evidence/b04-gate-a-pending.example.json), [read-only structural assessor](../../tools/evidence/assess-b04-gate-a.mjs), and negative tests. Public CI explicitly **cannot** grant Gate A.
-- Disposable SQL **infrastructure smoke** is constrained to a GitHub-hosted ephemeral runner and Docker `--network none` (container-internal localhost only; no host published port). The smoke does **not** run SQL business tests or approve the proposed B05/B06 sandbox.
+- Disposable SQL **infrastructure smoke** is constrained to a GitHub-hosted ephemeral runner and a Docker `--internal` bridge network (container-internal localhost; no host published port or outbound routing). The smoke does **not** run SQL business tests or approve the proposed B05/B06 sandbox.
 - Restricted assessment must stay in ignored `private-evidence/`, never in public PRs, logs, artifacts or ChatGPT messages. The assessor prints only status and missing control IDs, not confidential values.
 
 ## External evidence checklist and acceptance criteria
