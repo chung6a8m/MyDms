@@ -19,8 +19,9 @@ jobs:
           node-version: '22.16.0'
       - name: Validate public-only B04 contract with negative tests
         run: |
-          node --test tests/evidence/public-synthetic.test.mjs
+          node --test tests/evidence/public-synthetic.test.mjs tests/evidence/gate-a-readiness.test.mjs tests/ci/sql-infra-preflight.test.mjs
           node tools/evidence/check-public-synthetic.mjs fixtures/evidence/foundation-public-synthetic.example.json
+          node tools/evidence/assess-b04-gate-a.mjs --public fixtures/evidence/b04-gate-a-pending.example.json
   license:
     name: mit-license-governance
     runs-on: ubuntu-latest
