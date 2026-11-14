@@ -50,3 +50,11 @@ node tools/evidence/assess-b04-gate-a.mjs --public fixtures/evidence/b04-gate-a-
 ## Release boundary and remaining owner work
 
 **Blocker:** [B04 Issue #4](https://github.com/chung6a8m/MyDms/issues/4). [B05/TADR-01 #5](https://github.com/chung6a8m/MyDms/issues/5) and [B06/TADR-02 #6](https://github.com/chung6a8m/MyDms/issues/6) stay `PLANNED_BLOCKED_GATE_A`. `Gate B=BLOCKED`; TADR-01..06 still `DESIGN_CANDIDATE`; EV-01..15 real pending; G-STOCK/G-CUT/G-IDEMP/G-LEDGER/G-INV are non-waivable; B_NO_CHANNEL blocked, OFFLINE_WRITE and PRODUCTION_CUTOVER disabled. Once Gate A is authentically authorized, it only admits bounded **nonproduction** B05/B06 spikes; Gate B needs technical/QA/Finance TADR review and separate Owner authorization.
+
+## Provisioning/verification candidate after PR #8
+
+A provider **reference candidate** for an AWS S3 restricted store is available at [`infra/b04/aws-s3/`](../../infra/b04/aws-s3/README.vi.md) with CloudFormation JSON (private/locked/versioned buckets + KMS and CloudTrail S3 data events) and a [read-only protected preflight](../../tools/evidence/b04-aws-s3-preflight.mjs). It is intentionally **not deployed**: Owner has not selected AWS/account/region/retention/cost or provided access. Public CI tests only synthetic snapshots and CloudFormation JSON security invariants; it **never runs AWS CLI or uploads restricted evidence**.
+
+Configuration preflight additionally requires actual approved account/region, evidence+audit buckets, trail destination, SSE-KMS key and both retention policies; a complete 24/24 configuration observation is **not** an approved IAM-role access-denied test, a proven restore/audit event, or real QA/Ops/Security/Owner signoff. Gate A remains `NOT_READY`, Gate B `BLOCKED`, B05/B06 not started.
+
+**SEC-01..04 reference review:** the AWS candidate now covers CloudTrail service-principal TLS exception, explicit invalid encryption overrides, expected account/region/audit bucket and strict TLS Deny conditions with negative regressions. These tests are synthetic: no real AWS permissions, CloudTrail delivery or restricted proof has been established. Refer to [protected AWS operator runbook](../../infra/b04/aws-s3/README.vi.md).
