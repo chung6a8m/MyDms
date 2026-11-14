@@ -1,12 +1,12 @@
 # B04 Gate A — Closeout & restricted evidence intake
 
-**State on 14/11/2026: `NOT_READY`.** This is an execution package, **not a signed Gate A decision**. Upstream Product C′ `eb9c4b04e334530367b80ea4178edb4dd4a07491` and Acceptance R `e47c3feb44c02a0fdf46c35f6c4b2f57c4365470` are immutable.
+**State on 14/11/2026: `NOT_READY`.** Owner selected [Q08 option B — distinct Gate A safety vs Gate B TADR reviews](../decisions/2026-11-14-q08-gate-a-gate-b-scoped-review.vi.md). The selection is a policy decision, **not a signed Gate A authorization**. Upstream Product C′ `eb9c4b04e334530367b80ea4178edb4dd4a07491` and Acceptance R `e47c3feb44c02a0fdf46c35f6c4b2f57c4365470` are immutable.
 
 ## What is implemented
 
 - Public, synthetic-only B04 contract and [validation](../../tools/evidence/check-public-synthetic.mjs) remain separate from real R010 S3 evidence.
 - [Gate A pending template](../../fixtures/evidence/b04-gate-a-pending.example.json), [read-only structural assessor](../../tools/evidence/assess-b04-gate-a.mjs), and negative tests. Public CI explicitly **cannot** grant Gate A.
-- Disposable SQL **infrastructure smoke** is constrained to a GitHub-hosted ephemeral runner and a Docker `--internal` bridge network (container-internal localhost; no host published port or outbound routing). The smoke does **not** run SQL business tests or approve the proposed B05/B06 sandbox.
+- Disposable SQL **infrastructure smoke** is constrained to a GitHub-hosted ephemeral runner and a Docker `--internal` bridge network; the image is pinned to the digest observed in [CI #43560500604](https://github.com/chung6a8m/MyDms/actions/runs/43560500604). The new smoke checks there are no published host ports, performs a bounded negative TCP probe toward reserved TEST-NET-2 (not a provider), and verifies container/network removal *before* writing safe metadata. These checks do **not** prove all egress policies, least-privilege SQL runtime/migrator identities, B05/B06 fault safety, or actual Gate A acceptance.
 - Restricted assessment must stay in ignored `private-evidence/`, never in public PRs, logs, artifacts or ChatGPT messages. The assessor prints only status and missing control IDs, not confidential values.
 
 ## External evidence checklist and acceptance criteria
@@ -26,9 +26,9 @@ Store actual project/container/bucket names, credentials and raw artifact URIs *
 ## Restricted assessor workflow (manual, separate protected workspace)
 
 1. Copy `fixtures/evidence/b04-gate-a-pending.example.json` **outside the public repo**, into a `private-evidence/` directory protected from Git and public CI.
-2. Populate in the protected copy: `recordKind=RESTRICTED_DOSSIER_STRUCTURAL_ONLY_NOT_AUTHORIZATION`, `classification=RESTRICTED_INTERNAL_NOT_FOR_PUBLIC_GIT`, and the exact tested source commit in `sourceSha`.
-3. Set each actual completed control to `EVIDENCED` and its `evidenceRef` to a protected proof reference. Pending controls retain `PENDING` + null. Record real role reviewer principal, approval reference and timestamp for each APPROVED Technical, QA, Operations, Security and Finance record, with no fictitious independent signatures.
-4. Only **after** all evidence and reviews, an authorized Owner may issue an external versioned decision limited to `AUTHORIZED_B05_B06_NONPRODUCTION_ONLY`. No S6-A business runtime permission is implied.
+2. Populate in the protected copy: `schemaVersion=b04-gate-a-readiness-v2`, `recordKind=RESTRICTED_DOSSIER_STRUCTURAL_ONLY_NOT_AUTHORIZATION`, `classification=RESTRICTED_INTERNAL_NOT_FOR_PUBLIC_GIT`, and the exact tested source commit in `sourceSha`. This updates the **unmerged v1 draft contract in PR #8**; do not silently reuse v1 dossiers.
+3. Set each actually proven control to `EVIDENCED` with a protected `evidenceRef`; keep all others pending. Conduct an actual **Finance-safety scope risk assessment**: set `financeSafety.requirement` to `REQUIRED_FOR_GATE_A` or `NOT_REQUIRED_FOR_GATE_A_WITH_EVIDENCE` only with real assessor, timestamp and scoped proof. Record separate actual `APPROVED` role entries for **Technical, QA, Operations, Security**; add a Finance role entry at Gate A **only when the assessment requires it**. Finance remains a mandatory reviewer for the later TADR-01 ledger decision at Gate B, independently of this assessment.
+4. If the same person signs multiple Gate A roles, provide a protected `roleOverlap.disclosureRef` for role authority/delegation; never represent multiple records as independent human reviewers. Only **after** all actual evidence and scoped safety reviews may an authorized Owner issue an externally verifiable, versioned decision limited to `AUTHORIZED_B05_B06_NONPRODUCTION_ONLY`. No S6-A runtime, TADR-approval or mode permission is implied.
 5. Run locally in the restricted environment:
 
 ```bash
@@ -40,12 +40,12 @@ The output `STRUCTURALLY_COMPLETE_REQUIRES_LIVE_ATTESTATION` means the *fields* 
 ## Public CI validation
 
 ```bash
-node --test tests/evidence/public-synthetic.test.mjs tests/evidence/gate-a-readiness.test.mjs
+node --test tests/evidence/public-synthetic.test.mjs tests/evidence/gate-a-readiness.test.mjs tests/ci/sql-infra-preflight.test.mjs tests/ci/sql-infra-evidence.test.mjs
 node tools/evidence/check-public-synthetic.mjs fixtures/evidence/foundation-public-synthetic.example.json
 node tools/evidence/assess-b04-gate-a.mjs --public fixtures/evidence/b04-gate-a-pending.example.json
 ```
 
-**Expected:** CI passes a safe, pending template, prints `Gate A NOT_READY`, and rejects fake `READY`, forged approval, P0 waiver, duplicate reviewer principal or unclassified raw fields. CI must not use `--restricted` or publish a real dossier.
+**Expected:** CI passes a safe, pending template, prints `Gate A NOT_READY`, rejects fake `READY`, unreviewed Finance scope, missing safety signoffs, forged approvals, unapproved shared-principal assertions and P0 waiver. SQL smoke must not publish its success metadata until bounded egress observation **and** cleanup verification have completed. The new digest/cleanup results remain SQL-infrastructure evidence only. CI must not use `--restricted` or publish a real dossier.
 
 ## Release boundary and remaining owner work
 
