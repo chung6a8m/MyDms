@@ -1,6 +1,6 @@
 # B04 — AWS S3 restricted evidence store (ứng viên tham chiếu, chưa triển khai)
 
-**Trạng thái:** `PROVIDER_CANDIDATE / NOT_PROVISIONED / NOT_APPROVED`. Đây là bộ hướng dẫn cho một lựa chọn **AWS S3**, **không phải** quyết định Owner chọn AWS, không phải evidence thực, không phải Gate A approval. Dự án tiếp tục dùng <Link> không? Không dùng MDX ở tài liệu; xem [Issue #4](https://github.com/chung6a8m/MyDms/issues/4).
+**Trạng thái:** `PROVIDER_CANDIDATE / NOT_PROVISIONED / NOT_APPROVED`. Đây là bộ hướng dẫn cho một lựa chọn **AWS S3**, **không phải** quyết định Owner chọn AWS, không phải evidence thực, không phải Gate A approval; xem [Issue #4](https://github.com/chung6a8m/MyDms/issues/4).
 
 ## 1. Điều kiện trước khi triển khai CloudFormation
 
