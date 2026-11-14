@@ -19,7 +19,7 @@ jobs:
           node-version: '22.16.0'
       - name: Validate public-only B04 contract with negative tests
         run: |
-          node --test tests/evidence/public-synthetic.test.mjs tests/evidence/gate-a-readiness.test.mjs tests/ci/sql-infra-preflight.test.mjs tests/ci/sql-infra-evidence.test.mjs tests/evidence/b04-aws-s3-preflight.test.mjs tests/evidence/b04-cloudformation-reference.test.mjs
+          node --test tests/evidence/public-synthetic.test.mjs tests/evidence/gate-a-readiness.test.mjs tests/ci/sql-infra-preflight.test.mjs tests/ci/sql-infra-evidence.test.mjs tests/evidence/b04-aws-s3-preflight.test.mjs tests/evidence/b04-cloudformation-reference.test.mjs tests/evidence/b04-s3-encryption-policy.test.mjs
           node tools/evidence/check-public-synthetic.mjs fixtures/evidence/foundation-public-synthetic.example.json
           node tools/evidence/assess-b04-gate-a.mjs --public fixtures/evidence/b04-gate-a-pending.example.json
   license:
