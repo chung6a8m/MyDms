@@ -41,3 +41,7 @@ Current state: SQL infra smoke exists and passed on foundation CI; **no approved
 ## Gate A execution package
 
 See [B04 Gate A closeout](b04-gate-a-closeout.md) for the restricted evidence intake, seven actual safety control proofs, five role reviews, public pending fixture, read-only assessor, and the explicit requirement for independent live verification/Owner authorization. An all-fields-present JSON file does **not** authorize Gate A.
+
+## Q08 Owner option B — reviewer stages
+
+[Policy decision recorded](../decisions/2026-11-14-q08-gate-a-gate-b-scoped-review.vi.md): Gate A = actual Technical/QA/Operations/Security **safety** signoffs, with Finance conditional on an evidenced ledger-specific safety assessment. Gate B = actual TADR review after B05/B06, including Finance for TADR-01 ledger. No fixed five-independent-person Gate A rule; same-principal multirole must be disclosed/authorized and is **not** independent review. This policy selection is not Gate A approval.
