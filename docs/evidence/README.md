@@ -13,3 +13,5 @@ For non-sensitive open-source bootstrap only, see [B04 public synthetic metadata
 Secure external evidence store (access control, encryption, retention, audit and consent) remains **unconfigured**. See [B04 safety plan](../runbooks/b04-sandbox-and-evidence-safety.md); actual reviewer approval is pending and remains a Gate A condition.
 
 Gate A protected evidence intake and structural checks: [B04 Gate A closeout runbook](../runbooks/b04-gate-a-closeout.md), [pending template](../../fixtures/evidence/b04-gate-a-pending.example.json) and [assessor](../../tools/evidence/assess-b04-gate-a.mjs). The public CI always reports `NOT_READY` and never reads restricted data.
+
+For PR #8 finding F2/F3 closeout, the pinned container-image digest, source/checkout SHA, reserved TEST-NET-2 denied TCP observation, published-port count and verified container/network cleanup are recorded in **public synthetic infrastructure-only evidence** after cleanup. They are not restricted store, least-privilege SQL business test, Gate A safety authorization or EV PASS. See [Gate A runbook](../runbooks/b04-gate-a-closeout.md).
