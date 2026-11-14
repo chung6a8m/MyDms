@@ -69,7 +69,7 @@ const absent = value => value === undefined || value === null || value === '';
 const locationOK = (loc, expected) =>
   loc && Object.hasOwn(loc, 'LocationConstraint') &&
   normalizedLocation(loc.LocationConstraint) === expected;
-const bucketChecks = (label, b, region, retentionDays, { kmsArn = null, arn } = {}) => {
+const bucketChecks = (label, b, region, retentionDays, retentionMode, { kmsArn = null, arn } = {}) => {
   const block = b?.publicAccessBlock?.PublicAccessBlockConfiguration;
   const owners = b?.ownership?.OwnershipControls?.Rules;
   const enc = b?.encryption?.ServerSideEncryptionConfiguration?.Rules;
@@ -88,8 +88,7 @@ const bucketChecks = (label, b, region, retentionDays, { kmsArn = null, arn } = 
     check(label + '_VERSIONING_ENABLED', b?.versioning?.Status === 'Enabled'),
     check(label + '_ENCRYPTION_EXPECTED', kmsOK),
     check(label + '_OBJECT_LOCK_RETENTION', lock?.ObjectLockEnabled === 'Enabled' &&
-      ['GOVERNANCE','COMPLIANCE'].includes(d?.Mode) &&
-      Number(d?.Days) === retentionDays),
+      d?.Mode === retentionMode && Number(d?.Days) === retentionDays),
     check(label + '_BUCKET_POLICY_PRIVATE', b?.policyStatus?.PolicyStatus?.IsPublic === false),
     check(label + '_TLS_DENY_NON_SERVICE', matchesSecurePolicy(b?.bucketPolicy?.Policy, arn)),
     ...(kmsArn ? [check('EVIDENCE_EXPLICIT_SSE_KMS_DENY',
@@ -100,7 +99,7 @@ const bucketChecks = (label, b, region, retentionDays, { kmsArn = null, arn } = 
 export function evaluateB04S3ReadOnlySnapshot(x, expected) {
   const {
     accountId, region, partition, evidenceBucket, auditBucket, trailName, kmsKeyArn,
-    evidenceRetentionDays, auditRetentionDays
+    evidenceRetentionDays, auditRetentionDays, retentionMode
   } = expected || {};
   if (!x || typeof x !== 'object' || Array.isArray(x) ||
     !ACCOUNT.test(accountId || '') || !REGION.test(region || '') ||
@@ -108,6 +107,7 @@ export function evaluateB04S3ReadOnlySnapshot(x, expected) {
     !evidenceBucket || !auditBucket || evidenceBucket === auditBucket ||
     !trailName || !Number.isInteger(evidenceRetentionDays) || evidenceRetentionDays <= 0 ||
     !Number.isInteger(auditRetentionDays) || auditRetentionDays <= 0 ||
+    !['GOVERNANCE','COMPLIANCE'].includes(retentionMode) ||
     !new RegExp('^arn:' + partition + ':kms:' + region + ':' + accountId + ':key/').test(kmsKeyArn || '')) {
     throw Error('Protected approved AWS account/region/bucket/retention/KMS expectations required');
   }
@@ -129,9 +129,9 @@ export function evaluateB04S3ReadOnlySnapshot(x, expected) {
       identity.Arn.includes(':' + accountId + ':')),
     check('ACCOUNT_PUBLIC_ACCESS_BLOCK_ALL_FOUR',
       isAllPublicBlocked(x.accountPublicAccessBlock?.PublicAccessBlockConfiguration)),
-    ...bucketChecks('EVIDENCE', x.evidence, region, evidenceRetentionDays,
+    ...bucketChecks('EVIDENCE', x.evidence, region, evidenceRetentionDays, retentionMode,
       { arn: evidenceArn, kmsArn: kmsKeyArn }),
-    ...bucketChecks('AUDIT', x.audit, region, auditRetentionDays, { arn: auditArn }),
+    ...bucketChecks('AUDIT', x.audit, region, auditRetentionDays, retentionMode, { arn: auditArn }),
     check('TRAIL_ACCOUNT_REGION_AUDIT_DESTINATION_MATCH', matchesTrail),
     check('TRAIL_LOG_FILE_VALIDATION', matchesTrail && trail.LogFileValidationEnabled === true),
     check('TRAIL_LOGGING', matchesTrail && status?.IsLogging === true),
@@ -235,7 +235,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     partition: process.env.MYDMS_B04_AWS_PARTITION,
     kmsKeyArn: process.env.MYDMS_B04_EXPECTED_KMS_KEY_ARN,
     evidenceRetentionDays: Number(process.env.MYDMS_B04_APPROVED_RETENTION_DAYS),
-    auditRetentionDays: Number(process.env.MYDMS_B04_APPROVED_AUDIT_RETENTION_DAYS)
+    auditRetentionDays: Number(process.env.MYDMS_B04_APPROVED_AUDIT_RETENTION_DAYS),
+    retentionMode: process.env.MYDMS_B04_APPROVED_RETENTION_MODE
   };
   // Validate public-safe shapes BEFORE any credentialed read-only AWS invocation.
   if (!SHA40.test(process.env.MYDMS_B04_SOURCE_SHA || '') ||
@@ -245,6 +246,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       expected.evidenceBucket === expected.auditBucket || !expected.trailName ||
       !Number.isInteger(expected.evidenceRetentionDays) || expected.evidenceRetentionDays < 1 ||
       !Number.isInteger(expected.auditRetentionDays) || expected.auditRetentionDays < 1 ||
+      !['GOVERNANCE','COMPLIANCE'].includes(expected.retentionMode) ||
       !(expected.kmsKeyArn || '').startsWith(
         'arn:' + expected.partition + ':kms:' + expected.region + ':' + expected.accountId + ':key/')) {
     throw Error('Owner-approved source SHA, provider identity, buckets, KMS and retentions required');
