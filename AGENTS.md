@@ -5,7 +5,7 @@
 - **Product Baseline C′ immutable:** `eb9c4b04e334530367b80ea4178edb4dd4a07491`; metadata R `e47c3feb44c02a0fdf46c35f6c4b2f57c4365470` in research repository.
 - Business Module-First with Domain → Application → Infrastructure dependency direction; host composes infrastructure.
 - Q07 solo Owner PR merge after applicable CI **does not grant** Technical/QA/Finance approval.
-- Q08 Gate A isolated spike first; Gate B actual TADR-01/02 review and Owner runtime authorization later.
+- Q08 Owner option B: Gate A real Technical/QA/Ops/Security sandbox-safety review, with Finance only when the scoped Gate A ledger-safety assessment requires it. Gate B actual TADR-01/02 Technical/QA review plus Finance for TADR-01 ledger and explicit Owner runtime authorization. No automatic Gate A/EV approval or fictitious independent reviewer.
 
 ## Non-negotiable safety
 - No production tenant, data, secrets, or provider calls in tests. No customer data in Git.
