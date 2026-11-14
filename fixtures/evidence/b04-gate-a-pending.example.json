@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "b04-gate-a-readiness-v1",
+  "recordKind": "PUBLIC_PENDING_TEMPLATE_NOT_EVIDENCE",
+  "classification": "PUBLIC_SYNTHETIC_TEMPLATE_ONLY",
+  "sourceRepository": "chung6a8m/MyDms",
+  "sourceSha": null,
+  "scope": "B05_B06_ISOLATED_SYNTHETIC_NONPRODUCTION_ONLY",
+  "checks": [
+    {
+      "id": "STORE_ENCRYPTION_AND_VERSIONING",
+      "status": "PENDING",
+      "evidenceRef": null
+    },
+    {
+      "id": "STORE_ACCESS_DENY_AND_AUDIT",
+      "status": "PENDING",
+      "evidenceRef": null
+    },
+    {
+      "id": "STORE_RETENTION_AND_RESTORE",
+      "status": "PENDING",
+      "evidenceRef": null
+    },
+    {
+      "id": "DATA_BOUNDARY_AND_REDACTION",
+      "status": "PENDING",
+      "evidenceRef": null
+    },
+    {
+      "id": "SQL_SANDBOX_ISOLATION",
+      "status": "PENDING",
+      "evidenceRef": null
+    },
+    {
+      "id": "FAULT_ALLOWLIST_AND_STOP_CRITERIA",
+      "status": "PENDING",
+      "evidenceRef": null
+    },
+    {
+      "id": "SANDBOX_CLEANUP_EVIDENCE",
+      "status": "PENDING",
+      "evidenceRef": null
+    }
+  ],
+  "reviews": [
+    {
+      "role": "TECHNICAL",
+      "status": "PENDING",
+      "principalRef": null,
+      "approvalRef": null,
+      "decidedAt": null
+    },
+    {
+      "role": "QA",
+      "status": "PENDING",
+      "principalRef": null,
+      "approvalRef": null,
+      "decidedAt": null
+    },
+    {
+      "role": "OPERATIONS",
+      "status": "PENDING",
+      "principalRef": null,
+      "approvalRef": null,
+      "decidedAt": null
+    },
+    {
+      "role": "SECURITY",
+      "status": "PENDING",
+      "principalRef": null,
+      "approvalRef": null,
+      "decidedAt": null
+    },
+    {
+      "role": "FINANCE",
+      "status": "PENDING",
+      "principalRef": null,
+      "approvalRef": null,
+      "decidedAt": null
+    }
+  ],
+  "ownerGateA": {
+    "status": "PENDING",
+    "principalRef": null,
+    "approvalRef": null,
+    "decidedAt": null
+  },
+  "safety": {
+    "gateA": "NOT_READY",
+    "gateB": "BLOCKED",
+    "productVerified": false,
+    "tenantGoLiveAccepted": false,
+    "realEvRuns": 0,
+    "offlineWrite": "DISABLED_PENDING",
+    "bNoChannel": "BLOCKED",
+    "p0Waivers": []
+  }
+}
