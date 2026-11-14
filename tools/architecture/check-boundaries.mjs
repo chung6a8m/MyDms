@@ -27,6 +27,19 @@ function allowed(from, to) {
   return false;
 }
 const srcSet = new Set(projects.map(norm));
+if (srcSet.size !== projects.length || srcSet.size === 0) throw Error('Missing or duplicate solution projects');
+// Detect orphan source projects that evade .slnx-based architectural checks.
+function discoverCsproj(directory) {
+  if (!fs.existsSync(directory)) return [];
+  return fs.readdirSync(directory, { withFileTypes: true }).flatMap(e => {
+    if (['bin', 'obj', 'node_modules'].includes(e.name)) return [];
+    const full = path.join(directory, e.name);
+    return e.isDirectory() ? discoverCsproj(full) : e.isFile() && e.name.endsWith('.csproj') ? [norm(path.relative(root, full))] : [];
+  });
+}
+const discovered = [...discoverCsproj(path.join(root, 'src/server')), ...discoverCsproj(path.join(root, 'tests'))];
+if (discovered.length !== srcSet.size || discovered.some(p => !srcSet.has(p)))
+  throw Error('Unlisted project can evade architecture guard: ' + discovered.filter(p => !srcSet.has(p)).join(','));
 for (const project of projects) {
   const csprojPath = path.join(root, project);
   if (!fs.existsSync(csprojPath)) throw Error('Missing csproj: ' + project);
@@ -52,6 +65,6 @@ if (process.argv.includes('--self-test')) {
   const host = 'src/server/Host/MyDms.Api/MyDms.Api.csproj';
   if (allowed(invDomain, salesInfra) || allowed(inventoryApp, salesInfra) || allowed(invDomain, host))
     throw Error('Negative architecture tests failed');
-  console.log('PASS_ARCHITECTURE_NEGATIVES 3');
+  console.log('PASS_ARCHITECTURE_NEGATIVES 3 (plus orphan/duplicate project detection)');
 }
 console.log(JSON.stringify({ result: 'PASS_ARCHITECTURE_BOUNDARIES', projectCount: projects.length, verifiedProduct: false }));
