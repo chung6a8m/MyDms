@@ -11,3 +11,5 @@ For every real-system test, capture source/build SHA, testRunId, mode, environme
 For non-sensitive open-source bootstrap only, see [B04 public synthetic metadata contract](../../contracts/evidence/foundation-public-synthetic.schema.json), [example](../../fixtures/evidence/foundation-public-synthetic.example.json) and [validator](../../tools/evidence/check-public-synthetic.mjs). These are not substitutes for R010 S3 evidence-run.
 
 Secure external evidence store (access control, encryption, retention, audit and consent) remains **unconfigured**. See [B04 safety plan](../runbooks/b04-sandbox-and-evidence-safety.md); actual reviewer approval is pending and remains a Gate A condition.
+
+Gate A protected evidence intake and structural checks: [B04 Gate A closeout runbook](../runbooks/b04-gate-a-closeout.md), [pending template](../../fixtures/evidence/b04-gate-a-pending.example.json) and [assessor](../../tools/evidence/assess-b04-gate-a.mjs). The public CI always reports `NOT_READY` and never reads restricted data.
