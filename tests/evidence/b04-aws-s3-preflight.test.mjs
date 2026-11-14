@@ -18,7 +18,7 @@ const ENC='s3:x-amz-server-side-encryption';
 const KEY='s3:x-amz-server-side-encryption-aws-kms-key-id';
 const CUSTOMER='s3:x-amz-server-side-encryption-customer-algorithm';
 const expected={accountId:id,region,partition,evidenceBucket,auditBucket,trailName,kmsKeyArn,
- evidenceRetentionDays:90,auditRetentionDays:30};
+ evidenceRetentionDays:90,auditRetentionDays:30,retentionMode:'GOVERNANCE'};
 const blocked={BlockPublicAcls:true,IgnorePublicAcls:true,BlockPublicPolicy:true,
  RestrictPublicBuckets:true};
 const tls=(arn)=>[
@@ -108,6 +108,7 @@ test('object lock and respective approved retention verified on both buckets',()
  x.evidence.objectLock.ObjectLockConfiguration.ObjectLockEnabled='Disabled';});
  assert.ok(r.includes('AUDIT_OBJECT_LOCK_RETENTION'));
  assert.ok(r.includes('EVIDENCE_OBJECT_LOCK_RETENTION'));
+ assert.ok(mod(x=>{x.evidence.objectLock.ObjectLockConfiguration.Rule.DefaultRetention.Mode='COMPLIANCE';}).includes('EVIDENCE_OBJECT_LOCK_RETENTION'));
 });
 test('S3 policy nonpublic and TLS guards on both buckets',()=>{
  const r=mod(x=>{x.audit.policyStatus.PolicyStatus.IsPublic=true;
@@ -190,6 +191,7 @@ test('region us-east-1 null and EU legacy location compatibility',()=>{
 test('operator must provide approved account/region/retention/KMS expectations',()=>{
  assert.throws(()=>evaluateB04S3ReadOnlySnapshot(mock(),{...expected,accountId:'unknown'}));
  assert.throws(()=>evaluateB04S3ReadOnlySnapshot(mock(),{...expected,auditRetentionDays:0}));
+ assert.throws(()=>evaluateB04S3ReadOnlySnapshot(mock(),{...expected,retentionMode:'UNSET'}));
  assert.throws(()=>evaluateB04S3ReadOnlySnapshot(mock(),{...expected,kmsKeyArn:'not-an-arn'}));
 });
 test('protected AWS collection uses ONLY read-only API calls and approved Region',()=>{
@@ -205,6 +207,11 @@ test('protected AWS collection uses ONLY read-only API calls and approved Region
   assert.ok(args[1].startsWith('get-') || args[1]==='describe-trails',
    'No cloud create, update or delete command');
   assert.deepEqual(args.slice(-2),['--region',region]);
+  if(args[0]==='s3api') {
+    const ownerArg=args.indexOf('--expected-bucket-owner');
+    assert.ok(ownerArg>0,'S3 request must bind the approved bucket owner');
+    assert.equal(args[ownerArg+1],id);
+  }
  }
 });
 test('public CI refuses protected AWS collection before network access',()=>{
