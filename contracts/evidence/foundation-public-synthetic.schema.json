@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "S6-0 Public Synthetic Foundation Evidence; NOT S3 Real Evidence or Gate Approval",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "recordKind",
+    "runKind",
+    "executionStatus",
+    "classification",
+    "scope",
+    "sourceRepository",
+    "sourceHeadSha",
+    "testedCheckoutSha",
+    "testRunId",
+    "fixtureHash",
+    "artifacts",
+    "review",
+    "blockers",
+    "productVerified",
+    "tenantGoLiveAccepted",
+    "gateA",
+    "gateB",
+    "realEvRuns"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "s6-0-public-synthetic-v1"
+    },
+    "recordKind": {
+      "enum": [
+        "SYNTHETIC_EXAMPLE_NOT_EXECUTED",
+        "SYNTHETIC_CI_RUN_NOT_PRODUCT_EV"
+      ]
+    },
+    "runKind": {
+      "enum": [
+        "EXAMPLE",
+        "SYNTHETIC_CI"
+      ]
+    },
+    "executionStatus": {
+      "enum": [
+        "NOT_RUN",
+        "EXECUTED_UNREVIEWED"
+      ]
+    },
+    "classification": {
+      "const": "PUBLIC_SYNTHETIC_METADATA_ONLY"
+    },
+    "scope": {
+      "const": "FOUNDATION_B04_ONLY"
+    },
+    "sourceRepository": {
+      "const": "chung6a8m/MyDms"
+    },
+    "sourceHeadSha": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "testedCheckoutSha": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "testRunId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 6
+    },
+    "fixtureHash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "sha256",
+          "classification"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "UNIT_TEST_COUNTERS",
+              "SQL_INFRA_METADATA",
+              "BUILD_METADATA"
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "classification": {
+            "const": "PUBLIC_SYNTHETIC_METADATA_ONLY"
+          }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "reviewer",
+        "signoffRef"
+      ],
+      "properties": {
+        "state": {
+          "const": "NOT_SUBMITTED"
+        },
+        "reviewer": {
+          "type": "null"
+        },
+        "signoffRef": {
+          "type": "null"
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "allOf": [
+        {
+          "contains": {
+            "const": "B04_SECURE_STORE_NOT_CONFIGURED"
+          }
+        },
+        {
+          "contains": {
+            "const": "B04_QA_OPS_SECURITY_APPROVAL_PENDING"
+          }
+        }
+      ]
+    },
+    "productVerified": {
+      "const": false
+    },
+    "tenantGoLiveAccepted": {
+      "const": false
+    },
+    "gateA": {
+      "const": "NOT_READY"
+    },
+    "gateB": {
+      "const": "BLOCKED"
+    },
+    "realEvRuns": {
+      "const": 0
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "runKind": {
+            "const": "EXAMPLE"
+          }
+        },
+        "required": [
+          "runKind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "recordKind": {
+            "const": "SYNTHETIC_EXAMPLE_NOT_EXECUTED"
+          },
+          "executionStatus": {
+            "const": "NOT_RUN"
+          },
+          "sourceHeadSha": {
+            "type": "null"
+          },
+          "testedCheckoutSha": {
+            "type": "null"
+          },
+          "testRunId": {
+            "type": "null"
+          },
+          "fixtureHash": {
+            "type": "null"
+          },
+          "artifacts": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "runKind": {
+            "const": "SYNTHETIC_CI"
+          }
+        },
+        "required": [
+          "runKind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "recordKind": {
+            "const": "SYNTHETIC_CI_RUN_NOT_PRODUCT_EV"
+          },
+          "executionStatus": {
+            "const": "EXECUTED_UNREVIEWED"
+          },
+          "sourceHeadSha": {
+            "type": "string"
+          },
+          "testedCheckoutSha": {
+            "type": "string"
+          },
+          "testRunId": {
+            "type": "string"
+          },
+          "fixtureHash": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
+}
