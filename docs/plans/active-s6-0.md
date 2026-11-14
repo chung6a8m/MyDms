@@ -1,12 +1,14 @@
+> **Current state 14/11/2026:** [PR #1](https://github.com/chung6a8m/MyDms/pull/1) merged as `66e1609a7aaaa663894a5411a4f41c49ef4e9836`, MIT License recognized on `main`; [main foundation CI #43553550509](https://github.com/chung6a8m/MyDms/actions/runs/43553550509) **SUCCESS 5/5**. B04 public synthetic evidence contract is a separate candidate PR; external secure evidence store/reviewers/QA safety approval **NOT_CONFIGURED**. Gate A `NOT_READY`, B05/B06 `NOT_STARTED`; Gate B `BLOCKED`. Historical CI entries below remain retained for traceability.
+
 # Active S6-0 Foundation Bootstrap (Q01–Q08)
 
 | Step | Status | Requirement |
 |---|---|---|
-| B00 MIT open-source policy | OWNER_DECIDED / PR_PENDING | Public source under MIT, LICENSE + notices in source PR #1; verify merged default branch separately |
-| B01 Source bootstrap | SOURCE_PR_CANDIDATE / HISTORICAL_CI_PASS | .NET 10 solution, React apps, source files, CI build |
-| B02 Architecture boundaries | IMPLEMENTED / HISTORICAL_CI_PASS | Static graph check + negative self-tests; CI required |
-| B03 CI layering | FOUNDATION_CI_5_OF_5_PASS_ON_B4683F8 / NEW_HEAD_PENDING | .NET unit, TS frontend, architecture and isolated SQL infra smoke |
-| B04 Evidence safety | POLICY_AND_SYNTHETIC_CI_ONLY / SECURE_STORE_NOT_CONFIGURED | No real tenant data, secrets or external provider; secure evidence store/retention pending real setup |
+| B00 MIT open-source policy | MERGED / VERIFIED_MAIN | MIT LICENSE on main at 66e1609a7aaaa663894a5411a4f41c49ef4e9836; GitHub SPDX=MIT |
+| B01 Source bootstrap | MERGED / FOUNDATION_CI_PASS | .NET 10 solution, React apps, source files, CI build |
+| B02 Architecture boundaries | MERGED / FOUNDATION_CI_PASS | Static graph check + negative self-tests; CI required |
+| B03 CI layering | MERGED_MAIN_5_OF_5_PASS / B04_NEW_CHECK_PENDING | .NET unit, TS frontend, architecture and isolated SQL infra smoke |
+| B04 Evidence safety | SYNTHETIC_CONTRACT_PR / SECURE_STORE_AND_REVIEW_PENDING | No real tenant data, secrets or external provider; secure evidence store/retention pending real setup |
 | B05 TADR-01 spike | NOT_STARTED | Needs Gate A actual safe SQL sandbox |
 | B06 TADR-02 spike | NOT_STARTED | Needs Gate A; no runtime admission |
 | B07 Role-scoped review | PENDING_REVIEWERS | Technical/QA/Finance as applicable |

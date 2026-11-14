@@ -14,5 +14,7 @@ Run `node tools/architecture/check-boundaries.mjs --self-test`, `dotnet restore 
 
 These are candidate commands; record actual run SHA/results. Build/health do not prove tenant readiness.
 
+Public-only synthetic metadata is checked using `tools/evidence/check-public-synthetic.mjs`; no restricted artifacts or reviewer sign-offs may be encoded as public synthetic CI acceptance. See [B04 safety plan](b04-sandbox-and-evidence-safety.md).
+
 ## S6 Gate A/B
 B00 MIT/public governance + B01–B04 sandbox safety proven before any B05/B06 spike. Gate B requires TADR-01/02 Technical/QA review, Finance for finance ledger, actual evidence/dispositions, no P0 waiver and explicit Owner S6-A authorization. Missing roles remain PENDING/BLOCKED.

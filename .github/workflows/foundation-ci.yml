@@ -7,6 +7,20 @@ on:
 permissions:
   contents: read
 jobs:
+  b04-evidence:
+    name: b04-public-synthetic-evidence-contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Validate public-only B04 contract with negative tests
+        run: |
+          node --test tests/evidence/public-synthetic.test.mjs
+          node tools/evidence/check-public-synthetic.mjs fixtures/evidence/foundation-public-synthetic.example.json
   license:
     name: mit-license-governance
     runs-on: ubuntu-latest

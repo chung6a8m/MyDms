@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "s6-0-public-synthetic-v1",
+  "recordKind": "SYNTHETIC_EXAMPLE_NOT_EXECUTED",
+  "runKind": "EXAMPLE",
+  "executionStatus": "NOT_RUN",
+  "classification": "PUBLIC_SYNTHETIC_METADATA_ONLY",
+  "scope": "FOUNDATION_B04_ONLY",
+  "sourceRepository": "chung6a8m/MyDms",
+  "sourceHeadSha": null,
+  "testedCheckoutSha": null,
+  "testRunId": null,
+  "fixtureHash": null,
+  "artifacts": [],
+  "review": {
+    "state": "NOT_SUBMITTED",
+    "reviewer": null,
+    "signoffRef": null
+  },
+  "blockers": [
+    "B04_SECURE_STORE_NOT_CONFIGURED",
+    "B04_QA_OPS_SECURITY_APPROVAL_PENDING"
+  ],
+  "productVerified": false,
+  "tenantGoLiveAccepted": false,
+  "gateA": "NOT_READY",
+  "gateB": "BLOCKED",
+  "realEvRuns": 0
+}
