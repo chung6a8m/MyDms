@@ -1,10 +1,10 @@
 # MyDms
 
-**Private, proprietary Product DMS** — SaaS dành cho doanh nghiệp SME phân phối FMCG tại Việt Nam.
+**Open-source Product DMS — MIT License** — SaaS dành cho doanh nghiệp SME phân phối FMCG tại Việt Nam.
 
-> Internal source repository. All rights reserved by the repository owner. Public visibility or possession of source does not grant a license to copy, redistribute, or deploy it. Final legal/licensing wording is subject to Owner/legal review.
+> **Giấy phép:** [MIT](LICENSE) · Copyright (c) 2026 chung6a8m. Cho phép sử dụng, sửa đổi, phân phối và kinh doanh theo MIT, với nghĩa vụ giữ thông báo bản quyền và giấy phép. Source công khai không đồng nghĩa được công khai dữ liệu tenant, secrets hay raw evidence.
 
-## Engineering direction (Owner Q01–Q08, 14/11/2026)
+## Engineering direction (Q01 v2: MIT; Q02–Q08 unchanged, 14/11/2026)
 
 - Monorepo: .NET 10 + SQL Server + React/TypeScript.
 - Independent Modular Monolith, database-per-tenant, business-module-first Clean Architecture.

@@ -1,9 +1,11 @@
-# Proprietary Source Notice
+# MyDms — Open-source Notice
 
-MyDms is **private, proprietary commercial software**.
+MyDms is distributed under the **MIT License**.
 
-Copyright (c) 2026 the repository owner. All rights reserved.
+Copyright (c) 2026 chung6a8m.
 
-No license to redistribute, sublicense, publish, or deploy this source is granted by access to this repository. Third-party dependencies retain their own licenses and obligations.
+See [LICENSE](LICENSE). MIT permits commercial and noncommercial use, modification and redistribution under its conditions, including retention of its copyright and permission notice.
 
-This is an engineering source-control notice, not a legal opinion. The final copyright holder wording, contributor/contractor IP assignments and third-party notices require Owner/legal review. Do not add an OSS LICENSE file without a new Owner decision.
+Third-party dependencies, fonts and reused components retain their own license terms. Assess compatibility and attribution requirements before importing external code, including SaasOne or MyDmsVn. Public source code does **not** permit disclosure of live customer data, secret credentials or protected test artifacts.
+
+This copyright identification is based on the GitHub repository-owner handle. A later change to the legal copyright holder should be documented separately. Licensing changes do not imply TADR, Product Verification or Tenant Go-Live approvals.

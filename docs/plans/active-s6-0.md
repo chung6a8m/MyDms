@@ -2,7 +2,7 @@
 
 | Step | Status | Requirement |
 |---|---|---|
-| B00 Private visibility | VERIFIED by GitHub connection 14/11/2026 | Repo private; do not weaken |
+| B00 MIT open-source policy | OWNER_DECIDED / PR_PENDING | Public source under MIT, LICENSE + notices in source PR #1; verify merged default branch separately |
 | B01 Source bootstrap | IN_PROGRESS, candidate PR | .NET 10 solution, React apps, source files, CI build |
 | B02 Architecture boundaries | IMPLEMENTED_AS_CANDIDATE | Static graph check + negative self-tests; CI required |
 | B03 CI layering | CONFIGURED / RUNNER_BLOCKED | .NET unit, TS frontend, architecture and isolated SQL infra smoke |
@@ -20,7 +20,7 @@
 - A read-only reference/dependency inspection through connector checked **13 csproj and 18 ProjectReference edges, 0 invalid dependencies** on this source candidate. This is `SOURCE_STATIC_INSPECTION_ONLY`, **not** a substitute for runnable architecture test, .NET build or SQL test.
 - B01/B03 cannot be marked verified until exact-source build/unit/Node/SQL checks actually run. B04 secure evidence store and actor assignments also pending. Gate A remains **NOT_READY**.
 
-Do not mark B01/B03 verified until exact-source CI evidence exists. B00 was rechecked via connector in this task; source commit/PR and checks are evidence-specific. Private GitHub Actions artifacts from synthetic tests are not a complete secure runtime evidence store.
+Do not mark B01/B03 verified until exact-source CI evidence exists. **Q01 v2 (14/11/2026): Owner now selects Public/MIT**, superseding historical Private/Proprietary. Public CI logs/artifacts must never contain real NPP data, credentials or raw evidence. A Draft PR is not a merged MIT license on `main`; record exact HEAD/CI and Owner merge separately.
 
 Owner decision Q01–08: [research PR #3](https://github.com/chung6a8m/research-sme-phan-phoi-hang-tieu-dung/pull/3). Source governance Issue #4 remains open pending B01–B08 review.
 

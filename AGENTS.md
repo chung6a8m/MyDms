@@ -1,7 +1,7 @@
 # MyDms — Agent/Contributor Policy
 
 ## Binding decisions
-- **Private/proprietary** monorepo, .NET 10/SQL Server/React+TypeScript.
+- **Public, open-source MIT** monorepo (Owner Q01 v2 replaces the earlier Private/Proprietary decision); .NET 10/SQL Server/React+TypeScript. Follow [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md).
 - **Product Baseline C′ immutable:** `eb9c4b04e334530367b80ea4178edb4dd4a07491`; metadata R `e47c3feb44c02a0fdf46c35f6c4b2f57c4365470` in research repository.
 - Business Module-First with Domain → Application → Infrastructure dependency direction; host composes infrastructure.
 - Q07 solo Owner PR merge after applicable CI **does not grant** Technical/QA/Finance approval.

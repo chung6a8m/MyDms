@@ -7,6 +7,18 @@ on:
 permissions:
   contents: read
 jobs:
+  license:
+    name: mit-license-governance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Validate MIT source policy
+        run: node tools/governance/check-mit-license.mjs --self-test
   dotnet:
     name: dotnet-build-unit
     runs-on: ubuntu-latest

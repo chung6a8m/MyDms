@@ -1,7 +1,7 @@
 # S6-0 testing and evidence safety runbook
 
 ## Guardrails
-- GitHub repository must remain `private` and use least-privilege CI `contents: read`.
+- Repository visibility is **public** and source license is **MIT (Owner Q01 v2)**; CI must remain least-privilege (`contents: read`). Public job logs/artifacts must not disclose secrets, real NPP/Customer data, raw invoices or restricted evidence.
 - CI creates **only disposable synthetic SQL** on GitHub hosted runner. There must be no production endpoint, provider token or customer source file.
 - `MYDMS_SQL_TEST_DISPOSABLE=YES` is mandatory for SQL scripts; script rejects non-GitHub execution by default. No external `SQL_CONNECTION_STRING` is read by the fixture.
 - SQL Server container bound only to loopback; password generated in runner memory, not in Git, logs or artifacts. Cleanup uses `trap`, including on failure.
@@ -15,4 +15,4 @@ Run `node tools/architecture/check-boundaries.mjs --self-test`, `dotnet restore 
 These are candidate commands; record actual run SHA/results. Build/health do not prove tenant readiness.
 
 ## S6 Gate A/B
-B00 private + B01-B04 sandbox safety proven before any B05/B06 spike. Gate B requires TADR-01/02 Technical/QA review, Finance for finance ledger, actual evidence/dispositions, no P0 waiver and explicit Owner S6-A authorization. Missing roles remain PENDING/BLOCKED.
+B00 MIT/public governance + B01–B04 sandbox safety proven before any B05/B06 spike. Gate B requires TADR-01/02 Technical/QA review, Finance for finance ledger, actual evidence/dispositions, no P0 waiver and explicit Owner S6-A authorization. Missing roles remain PENDING/BLOCKED.
