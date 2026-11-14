@@ -30,8 +30,10 @@ test('alternate external SQL configuration fails closed', () => {
 });
 test('infra container cannot publish ports or reach provider network', () => {
   const src = fs.readFileSync(script, 'utf8');
-  assert.match(src, /--network none/);
+  assert.match(src, /docker network create --driver bridge --internal/);
+assert.match(src, /--network "\$network_name"/);
+assert.match(src, /timeout 8s docker exec/);
   assert.doesNotMatch(src, /--publish/);
   assert.match(src, /HostConfig.NetworkMode/);
-  assert.match(src, /CONTAINER_NETWORK_NONE/);
+  assert.match(src, /DOCKER_INTERNAL_BRIDGE_NO_EGRESS/);
 });
