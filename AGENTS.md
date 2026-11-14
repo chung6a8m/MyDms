@@ -24,3 +24,8 @@
 - No direct business table access across module boundaries; design atomic transaction coordination in TADR-01.
 - Keep build deterministic, pin dependencies, fail on mandatory skipped tests, do not suppress security audit.
 - Source, PR comments and technical records in Vietnamese where appropriate; code symbols English.
+
+## External restricted evidence provider
+- AWS S3/CloudTrail IaC under `infra/b04/aws-s3/` is a **provider candidate only**; do not infer Owner/provider selection. A public PR, CI or CloudFormation template must never deploy/modify real cloud resources.
+- Cloud config read-only preflight runs only in an explicitly authorized protected environment, with real credentials outside Git and output in ignored `private-evidence/`. Public CI may test mocked responses and JSON invariants only.
+- No `Gate A=READY` or B05/B06 fault injection until independently verified store IAM/KMS, access-denied/audit/restore, sandbox safety, real role approvals and Owner's scoped Gate A record. No fabricated timestamps or signatures.
