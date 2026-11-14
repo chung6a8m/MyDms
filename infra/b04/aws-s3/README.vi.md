@@ -15,8 +15,8 @@ Chỉ kỹ sư có quyền ở **AWS account được Owner chấp thuận**, tr
 
 [CloudFormation JSON](evidence-store.template.json) tạo theo lựa chọn có kiểm soát, khi operator áp dụng sau phê duyệt:
 
-- Bucket evidence: `BlockPublicAccess` bốn mức, `BucketOwnerEnforced`, versioning, S3 Object Lock (mode/days có Owner quyết định), SSE-KMS bằng CMK có rotation, Deny non-TLS và TLS dưới 1.2; không `forceDestroy`.
-- Bucket audit riêng: private, versioned, WORM/retention, server-side encryption, Deny non-TLS và TLS dưới 1.2.
+- Bucket evidence: `BlockPublicAccess` bốn mức, `BucketOwnerEnforced`, versioning, S3 Object Lock (mode/days có Owner quyết định), SSE-KMS bằng CMK có rotation và **explicit bucket-policy Deny** cho SSE-S3, SSE-C, thuật toán khác, `aws:kms` thiếu key ID hoặc key ID không trùng CMK được duyệt; request không mang header mã hóa vẫn sử dụng default SSE-KMS của bucket. Không `forceDestroy`.
+- Bucket audit riêng: private, versioned, WORM/retention, server-side encryption; TLS 1.2+ Deny áp dụng cho non-AWS service principals (`aws:PrincipalIsAWSService=false`) nhằm tránh chặn CloudTrail service-to-service. Principal CloudTrail chỉ được Allow theo `aws:SourceArn` gắn với trail cụ thể; **bắt buộc thử thực** log delivery.
 - CloudTrail với event selector S3 object `ReadWriteType=All`, log file validation và log gửi audit bucket riêng; data-event logging không mặc nhiên bật ở mọi trail.
 - Bucket/KMS `DeletionPolicy=Retain`, `UpdateReplacePolicy=Retain`, nhưng **chính sách IAM least privilege, KMS trust và chu kỳ xóa/lưu trữ vẫn cần review thực**.
 
@@ -54,9 +54,19 @@ node tools/evidence/b04-aws-s3-preflight.mjs \
   --restricted private-evidence/b04-s3-observation.json
 ```
 
-Script yêu cầu: `MYDMS_B04_EVIDENCE_BUCKET`, `MYDMS_B04_AUDIT_TRAIL`, `MYDMS_B04_APPROVED_RETENTION_DAYS`, `MYDMS_B04_SOURCE_SHA` và AWS CLI đã login. Nó chỉ gọi read-only S3/CloudTrail/STS APIs, kiểm tra chín nhóm cấu hình, rồi ghi bản redacted cấu hình dưới `private-evidence/` với quyền file 0600. Mọi lỗi/provider credentials phải được xử lý trong môi trường bảo mật.
+Script yêu cầu các biến môi trường trong **protected terminal**: `MYDMS_B04_EVIDENCE_BUCKET`, `MYDMS_B04_AUDIT_BUCKET`, `MYDMS_B04_AUDIT_TRAIL`, `MYDMS_B04_APPROVED_AWS_ACCOUNT`, `MYDMS_B04_APPROVED_AWS_REGION`, `MYDMS_B04_AWS_PARTITION`, `MYDMS_B04_EXPECTED_KMS_KEY_ARN`, `MYDMS_B04_APPROVED_RETENTION_DAYS`, `MYDMS_B04_APPROVED_AUDIT_RETENTION_DAYS`, `MYDMS_B04_APPROVED_RETENTION_MODE`, `MYDMS_B04_SOURCE_SHA` và AWS CLI đã login. Account/region, bucket/trail/KMS key và retention **phải được Owner duyệt trước**. Mọi S3 API có `--expected-bucket-owner`, mọi AWS CLI đọc cấu hình có `--region` cụ thể. Preflight đọc account-level public block, cả hai buckets, mô tả/destination/ARN/region của CloudTrail, log file validation, thông báo lỗi giao log và event selectors; chỉ ghi các trạng thái tổng hợp (không chứa resource IDs) dưới `private-evidence/` mode 0600. Mọi provider credentials/errors phải xử lý trong kênh bảo mật.
 
-Dù **9/9 cấu hình PASS**, output vẫn `gateA=NOT_READY`. Một tệp JSON có trường PASS không chứng minh quyền IAM, bảo đảm WORM, CloudTrail audit thực hoặc danh tính reviewer.
+Dù **24/24 cấu hình PASS**, output vẫn `gateA=NOT_READY`. Đây là kiểm tra cấu hình **chỉ đọc**, không phải AWS policy simulation; không chứng minh quyền IAM/KMS thực, restore/retention, CloudTrail **đã giao và đối chiếu** một sự kiện thực hay danh tính reviewer. Khi thiếu một phép đo, công cụ phải giữ `PENDING_CONFIGURATION_OR_PROOF`. Việc dùng `get-bucket-location` phục vụ đối chiếu vùng hiện chỉ là tương thích với AWS CLI, cần rà soát quyền API trong môi trường protected.
+
+
+## SEC-01..SEC-04: kiểm tra bổ sung trước change-set
+
+- **SEC-01:** Test cả hai TLS Deny statements có điều kiện `aws:PrincipalIsAWSService=false`; kiểm tra CloudTrail SourceArn và thực tế ghi audit sau khi Owner duyệt triển khai. Tránh coi service exclusion là chính sách TLS áp dụng cho AWS service.
+- **SEC-02:** Kiểm thử request dùng default SSE-KMS không gửi header được phép bởi chính các Deny về mã hóa; gửi `AES256`, `aws:kms` thiếu key, key khác, key không có thuật toán và SSE-C đều bị Deny. Đây là regression về cấu trúc IAM rule, **không phải policy simulator thực**; cần test authorized/denied `PutObject` trên AWS riêng.
+- **SEC-03:** `sts.Account`, approved region, `--expected-bucket-owner` của cả evidence+audit, `DescribeTrails` đúng trail ARN/HomeRegion/S3BucketName/LogFileValidationEnabled, không có reported S3 delivery error và S3 data selectors gắn đúng ARN. `LatestDeliveryError` trống **chưa chứng minh** sự kiện đã được ghi; cần kiểm thử sinh/nhận/audit.
+- **SEC-04:** TLS policy validation chỉ chấp nhận canonical Deny với tập Condition đúng và service-principal exception; mọi điều kiện khác có thể giới hạn Deny (như `StringEquals` tag) phải trả pending. Các phép so sánh JSON không phụ thuộc thứ tự key.
+
+Các tiêu chí CloudFormation/Policy tham chiếu tới tài liệu AWS: [S3 condition keys](https://docs.aws.amazon.com/AmazonS3/latest/userguide/amazon-s3-policy-keys.html), [Using SSE-KMS](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html), [CloudTrail describe-trails](https://docs.aws.amazon.com/cli/latest/reference/cloudtrail/describe-trails.html), [get-trail-status](https://docs.aws.amazon.com/cli/latest/reference/cloudtrail/get-trail-status.html). Kết quả chưa được xác minh với account thật; không chuyển Gate A/B.
 
 ## 5. Các phép kiểm thực bắt buộc, không tự động chạy
 
