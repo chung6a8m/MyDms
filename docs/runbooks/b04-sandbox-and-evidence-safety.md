@@ -37,3 +37,7 @@ Current state: SQL infra smoke exists and passed on foundation CI; **no approved
 2. Document verified disposable SQL/test runner identity, fixture generator and allowed fault scope. Review any network egress.
 3. Assign actual QA/Ops/Security owners, review B04 safety/runbook and record dated approval evidence. No substitute fake reviewers.
 4. Then authorize B05/B06 source spike PRs. Synthetic CI alone may continue in the meantime without claiming Gate A.
+
+## Gate A execution package
+
+See [B04 Gate A closeout](b04-gate-a-closeout.md) for the restricted evidence intake, seven actual safety control proofs, five role reviews, public pending fixture, read-only assessor, and the explicit requirement for independent live verification/Owner authorization. An all-fields-present JSON file does **not** authorize Gate A.
