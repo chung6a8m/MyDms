@@ -15,7 +15,11 @@ const check = (id, success) => ({
 });
 const keysExactly = (value, names) => value !== null && typeof value === 'object' &&
   !Array.isArray(value) && Object.keys(value).sort().join('|') === names.slice().sort().join('|');
-const equals = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const canonical = v => Array.isArray(v) ? v.map(canonical) :
+  v !== null && typeof v === 'object'
+    ? Object.fromEntries(Object.keys(v).sort().map(k => [k, canonical(v[k])]))
+    : v;
+const equals = (a, b) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
 const isAllPublicBlocked = x => FLAGS.every(key => x?.[key] === true);
 const parsePolicy = raw => {
   try {
@@ -181,15 +185,16 @@ export function collectB04S3Snapshot(aws, { evidenceBucket, auditBucket, trailNa
     throw Error('Protected account/buckets/trail/region must be specified');
   }
   const call = args => aws([...args, '--region',region]);
+  const s3 = (verb,name) => call(['s3api',verb,'--bucket',name,'--expected-bucket-owner',accountId]);
   const bucket = name => ({
-    publicAccessBlock: call(['s3api','get-public-access-block','--bucket',name]),
-    ownership: call(['s3api','get-bucket-ownership-controls','--bucket',name]),
-    versioning: call(['s3api','get-bucket-versioning','--bucket',name]),
-    encryption: call(['s3api','get-bucket-encryption','--bucket',name]),
-    objectLock: call(['s3api','get-object-lock-configuration','--bucket',name]),
-    policyStatus: call(['s3api','get-bucket-policy-status','--bucket',name]),
-    bucketPolicy: call(['s3api','get-bucket-policy','--bucket',name]),
-    location: call(['s3api','get-bucket-location','--bucket',name])
+    publicAccessBlock: s3('get-public-access-block',name),
+    ownership: s3('get-bucket-ownership-controls',name),
+    versioning: s3('get-bucket-versioning',name),
+    encryption: s3('get-bucket-encryption',name),
+    objectLock: s3('get-object-lock-configuration',name),
+    policyStatus: s3('get-bucket-policy-status',name),
+    bucketPolicy: s3('get-bucket-policy',name),
+    location: s3('get-bucket-location',name)
   });
   return {
     identity: call(['sts','get-caller-identity']),
@@ -232,7 +237,19 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     evidenceRetentionDays: Number(process.env.MYDMS_B04_APPROVED_RETENTION_DAYS),
     auditRetentionDays: Number(process.env.MYDMS_B04_APPROVED_AUDIT_RETENTION_DAYS)
   };
-  // Read-only calls MUST use the explicitly approved Region; never assume local CLI default.
+  // Validate public-safe shapes BEFORE any credentialed read-only AWS invocation.
+  if (!SHA40.test(process.env.MYDMS_B04_SOURCE_SHA || '') ||
+      !ACCOUNT.test(expected.accountId || '') || !REGION.test(expected.region || '') ||
+      !['aws','aws-cn','aws-us-gov'].includes(expected.partition) ||
+      !expected.evidenceBucket || !expected.auditBucket ||
+      expected.evidenceBucket === expected.auditBucket || !expected.trailName ||
+      !Number.isInteger(expected.evidenceRetentionDays) || expected.evidenceRetentionDays < 1 ||
+      !Number.isInteger(expected.auditRetentionDays) || expected.auditRetentionDays < 1 ||
+      !(expected.kmsKeyArn || '').startsWith(
+        'arn:' + expected.partition + ':kms:' + expected.region + ':' + expected.accountId + ':key/')) {
+    throw Error('Owner-approved source SHA, provider identity, buckets, KMS and retentions required');
+  }
+  // Every S3 query specifies --expected-bucket-owner; every AWS call pins the approved Region.
   const observations = collectB04S3Snapshot(awsJson, expected);
   const report = evaluateB04S3ReadOnlySnapshot(observations, expected);
   fs.writeFileSync(out, JSON.stringify({
