@@ -57,7 +57,7 @@ cleanup() {
   fi
   if [[ "$rc" -eq 0 && "$ready" == true && "$egress_denied" == true &&
         "$network_verified" == true && "$cleanup_failed" == false ]]; then
-    printf '{"result":"INFRA_SQL_READY_ONLY","imageId":"%s","imagePinnedDigest":"%s","sourceHeadSha":"%s","testedCheckoutSha":"%s","ciRunId":"%s","networkIsolation":"DOCKER_INTERNAL_BRIDGE_NEGATIVE_PROBE","negativeEgressProbe":"DENIED_TEST_NET_198_51_100_1_PORT_443","hostPublishedPorts":0,"containerAndNetworkCleanupVerified":true,"realBusinessTests":0,"productVerified":false}\n' \
+    printf '{"result":"INFRA_SQL_READY_ONLY","classification":"PUBLIC_SYNTHETIC_METADATA_ONLY","imageId":"%s","imagePinnedDigest":"%s","sourceHeadSha":"%s","testedCheckoutSha":"%s","ciRunId":"%s","networkIsolation":"DOCKER_INTERNAL_BRIDGE_NEGATIVE_PROBE","negativeEgressProbe":"DENIED_TEST_NET_198_51_100_1_PORT_443","hostPublishedPorts":0,"containerAndNetworkCleanupVerified":true,"realBusinessTests":0,"productVerified":false}\n' \
       "$image_id" "$pinned_digest" "$source_sha" "$checkout_sha" "$run_id" \
       > artifacts/ci/sql-infra-smoke.json
     echo "SQL Server 2022 pinned-digest infra READY; negative TEST-NET egress probe DENIED; container/network cleanup VERIFIED; NO ledger or business tests"
