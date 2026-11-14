@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+    <ProjectReference Include="../../../src/server/BuildingBlocks/MyDms.BuildingBlocks.csproj" />
+    <ProjectReference Include="../../../src/server/Modules/Inventory/Domain/MyDms.Inventory.Domain.csproj" />
+    <ProjectReference Include="../../../src/server/Modules/Sales/Domain/MyDms.Sales.Domain.csproj" />
+    <ProjectReference Include="../../../src/server/Modules/Settlement/Domain/MyDms.Settlement.Domain.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,10 @@
+{
+  "name": "MyDms Field PWA",
+  "short_name": "MyDms Field",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "description": "S6-0 Field shell. Offline business writes disabled until separate mode admission."
+}

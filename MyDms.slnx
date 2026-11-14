@@ -1,0 +1,15 @@
+<Solution>
+  <Project Path="src/server/BuildingBlocks/MyDms.BuildingBlocks.csproj" />
+  <Project Path="src/server/Platform/Tenancy/MyDms.Platform.Tenancy.csproj" />
+  <Project Path="src/server/Modules/Inventory/Domain/MyDms.Inventory.Domain.csproj" />
+  <Project Path="src/server/Modules/Inventory/Application/MyDms.Inventory.Application.csproj" />
+  <Project Path="src/server/Modules/Inventory/Infrastructure/MyDms.Inventory.Infrastructure.csproj" />
+  <Project Path="src/server/Modules/Sales/Domain/MyDms.Sales.Domain.csproj" />
+  <Project Path="src/server/Modules/Sales/Application/MyDms.Sales.Application.csproj" />
+  <Project Path="src/server/Modules/Sales/Infrastructure/MyDms.Sales.Infrastructure.csproj" />
+  <Project Path="src/server/Modules/Settlement/Domain/MyDms.Settlement.Domain.csproj" />
+  <Project Path="src/server/Modules/Settlement/Application/MyDms.Settlement.Application.csproj" />
+  <Project Path="src/server/Modules/Settlement/Infrastructure/MyDms.Settlement.Infrastructure.csproj" />
+  <Project Path="src/server/Host/MyDms.Api/MyDms.Api.csproj" />
+  <Project Path="tests/Unit/MyDms.UnitTests/MyDms.UnitTests.csproj" />
+</Solution>
