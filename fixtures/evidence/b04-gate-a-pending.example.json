@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "b04-gate-a-readiness-v1",
+  "schemaVersion": "b04-gate-a-readiness-v2",
   "recordKind": "PUBLIC_PENDING_TEMPLATE_NOT_EVIDENCE",
   "classification": "PUBLIC_SYNTHETIC_TEMPLATE_ONLY",
   "sourceRepository": "chung6a8m/MyDms",
@@ -70,13 +70,6 @@
       "principalRef": null,
       "approvalRef": null,
       "decidedAt": null
-    },
-    {
-      "role": "FINANCE",
-      "status": "PENDING",
-      "principalRef": null,
-      "approvalRef": null,
-      "decidedAt": null
     }
   ],
   "ownerGateA": {
@@ -94,5 +87,14 @@
     "offlineWrite": "DISABLED_PENDING",
     "bNoChannel": "BLOCKED",
     "p0Waivers": []
+  },
+  "financeSafety": {
+    "requirement": "PENDING_SCOPE_ASSESSMENT",
+    "assessmentRef": null,
+    "assessedByRef": null,
+    "assessedAt": null
+  },
+  "roleOverlap": {
+    "disclosureRef": null
   }
 }
