@@ -73,3 +73,55 @@ test('template does not silently provision identities or modify approved product
   }
   assert.equal(Object.keys(resources).length,6);
 });
+
+
+test('SEC-01: both TLS denials exempt AWS service principal while preserving CloudTrail SourceArn',()=>{
+  for(const name of ['EvidenceBucketPolicy','AuditBucketPolicy']){
+    const statements=resources[name].Properties.PolicyDocument.Statement;
+    const transport=statements.find(s=>s.Sid==='DenyInsecureTransport');
+    assert.equal(transport.Condition.Bool['aws:SecureTransport'],'false');
+    assert.equal(transport.Condition.Bool['aws:PrincipalIsAWSService'],'false');
+    const tls=statements.find(s=>s.Sid==='DenyTLSBelow12');
+    assert.equal(tls.Condition.NumericLessThan['s3:TlsVersion'],1.2);
+    assert.deepEqual(tls.Condition.Bool,{'aws:PrincipalIsAWSService':'false'});
+  }
+  const audit=resources.AuditBucketPolicy.Properties.PolicyDocument.Statement;
+  for(const id of ['AWSCloudTrailAclCheck','AWSCloudTrailWrite']){
+    const s=audit.find(x=>x.Sid===id);
+    assert.equal(s.Principal.Service,'cloudtrail.amazonaws.com');
+    assert.ok(s.Condition.StringEquals['aws:SourceArn']);
+  }
+});
+
+test('SEC-02: explicit non-KMS, wrong KMS key, missing key and SSE-C must be denied',()=>{
+ const evidence=resources.EvidenceBucketPolicy.Properties.PolicyDocument.Statement;
+ const target={'Fn::Sub':'${EvidenceBucket.Arn}/*'};
+ const actions=[
+  'DenyExplicitNonKmsEncryption',
+  'DenyExplicitKmsWithoutKey',
+  'DenyExplicitKmsKeyWithoutAlgorithm',
+  'DenyExplicitNonApprovedKmsKey',
+  'DenyExplicitCustomerProvidedKeys'
+ ];
+ for(const name of actions){
+  const statement=evidence.find(s=>s.Sid===name);
+  assert.equal(statement.Effect,'Deny');
+  assert.equal(statement.Principal,'*');
+  assert.equal(statement.Action,'s3:PutObject');
+  assert.deepEqual(statement.Resource,[target]);
+ }
+ const keyStmt=evidence.find(s=>s.Sid==='DenyExplicitNonApprovedKmsKey');
+ assert.deepEqual(keyStmt.Condition.StringNotEquals['s3:x-amz-server-side-encryption-aws-kms-key-id'],
+  {'Fn::GetAtt':['EvidenceKmsKey','Arn']});
+ const headerStmt=evidence.find(s=>s.Sid==='DenyExplicitNonKmsEncryption');
+ assert.deepEqual(headerStmt.Condition,{
+  Null:{'s3:x-amz-server-side-encryption':'false'},
+  StringNotEquals:{'s3:x-amz-server-side-encryption':'aws:kms'}
+ });
+});
+
+test('CloudFormation never introduces provider deployments or Owner-implied approval in workflow',()=>{
+ const workflow=fs.readFileSync('.github/workflows/foundation-ci.yml','utf8');
+ assert.ok(!/cloudformation\s+(deploy|execute-change-set|create-stack)/.test(workflow));
+ assert.ok(!/aws\s+s3api\s+(put|delete)/.test(workflow));
+});
