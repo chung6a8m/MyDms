@@ -32,3 +32,12 @@
 *.user
 *.suo
 .DS_Store
+
+# Protected cloud evidence / IaC execution outputs must stay outside this public repo
+**/private-evidence/
+**/private-params*.json
+**/cf-outputs*.json
+**/.aws/
+**/.terraform/
+*.tfstate
+*.tfstate.*
