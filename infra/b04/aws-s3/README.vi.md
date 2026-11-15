@@ -1,12 +1,12 @@
 # B04 — AWS S3 restricted evidence store (ứng viên tham chiếu, chưa triển khai)
 
-**Trạng thái:** `PROVIDER_CANDIDATE / NOT_PROVISIONED / NOT_APPROVED`. Đây là bộ hướng dẫn cho một lựa chọn **AWS S3**, **không phải** quyết định Owner chọn AWS, không phải evidence thực, không phải Gate A approval; xem [Issue #4](https://github.com/chung6a8m/MyDms/issues/4).
+**Trạng thái cập nhật 15/11/2026:** `AWS_S3_SELECTED_BY_OWNER_IN_CHAT / NOT_PROVISIONED / GATE_A_NOT_READY`. Owner đã chọn **AWS S3** theo [Q-GA01](../../../docs/decisions/2026-11-15-q-ga01-aws-evidence-store-provider.vi.md); **chưa** phê duyệt account/region/cost/retention/roles hoặc quyền execute change-set. Bản hướng dẫn này vẫn là **reference**, không phải evidence thực hoặc Gate A approval; xem [Issue #4](https://github.com/chung6a8m/MyDms/issues/4).
 
 ## 1. Điều kiện trước khi triển khai CloudFormation
 
 Chỉ kỹ sư có quyền ở **AWS account được Owner chấp thuận**, trong **protected operator session**, mới thực hiện các thao tác tạo tài nguyên. Không để ChatGPT/GitHub public CI tự áp dụng template.
 
-1. Owner chọn nhà cung cấp (AWS S3 hoặc phương án tương đương), AWS account/region, ngân sách và người vận hành. CloudTrail object data events có thể phát sinh chi phí.
+1. Owner đã chọn AWS S3 (Q-GA01); **vẫn cần** chốt AWS account/region, ngân sách và người vận hành trước khi có thể xét provisioning. CloudTrail object data events có thể phát sinh chi phí.
 2. Finance/Security/Ops/Legal (theo phạm vi) đánh giá retention, backup, quyền xóa và rủi ro tuân thủ. Phải chọn `RetentionMode` (`GOVERNANCE` hoặc `COMPLIANCE`), số ngày giữ *evidence* và *audit* riêng; **không có default**. Object Lock + versioning khó/không thể vô hiệu hóa sau khi bật, và COMPLIANCE không cho xóa sớm.
 3. Xác định thực tế IAM roles riêng cho write, read, audit và break-glass; KMS permissions, separation of duties và quyền CloudFormation administrator. Template **không tạo IAM principals hay cấp quyền đọc/ghi**, nên chưa chứng minh least privilege.
 4. Khóa nguồn chứng thực, hạn chế quyền operator, đặt tên bucket/trail trong **private channel**, không đưa resource/account IDs, access keys, logs, signed links hoặc `private-evidence/` vào GitHub, Issues/PR comments hay public Actions.

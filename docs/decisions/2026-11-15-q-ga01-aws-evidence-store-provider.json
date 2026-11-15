@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "b04-owner-provider-selection-v1",
+  "decisionId": "Q-GA01",
+  "version": "1.0",
+  "decisionDateLocal": "2026-11-15",
+  "decisionSource": "OWNER_RESPONSE_IN_CHAT_INTERVIEW",
+  "recordedBy": "AI_ASSISTANT_AT_USER_REQUEST",
+  "independentOwnerSignatureRef": null,
+  "independentOwnerSignedAt": null,
+  "status": "OWNER_PROVIDER_SELECTED_IN_CHAT_RECORDED",
+  "selectedOption": "1",
+  "provider": "AWS_S3",
+  "scope": "B04_RESTRICTED_EVIDENCE_PROVIDER_CHOICE_ONLY",
+  "targetArchitecture": [
+    "S3_PRIVATE_EVIDENCE_BUCKET",
+    "S3_PRIVATE_AUDIT_BUCKET",
+    "SSE_KMS_EVIDENCE",
+    "CLOUDTRAIL_S3_OBJECT_EVENTS",
+    "S3_VERSIONING",
+    "S3_OBJECT_LOCK"
+  ],
+  "provisioningAuthorization": "NOT_GRANTED",
+  "pendingOwnerDecisions": [
+    "Q-GA02_ACCOUNT_BOUNDARY",
+    "Q-GA03_REGION",
+    "Q-GA04_RETENTION_MODE_AND_DAYS",
+    "Q-GA05_BUDGET_OPERATOR"
+  ],
+  "pendingProof": [
+    "ACCESS_DENIED_AND_ALLOWED",
+    "CLOUDTRAIL_DELIVERY_CORRELATION",
+    "RETENTION_RESTORE",
+    "SQL_SANDBOX_ISOLATION",
+    "FAULT_AND_CLEANUP",
+    "TECHNICAL_QA_OPS_SECURITY_ROLE_ACCEPTANCE",
+    "FINANCE_SAFETY_SCOPE"
+  ],
+  "safety": {
+    "gateA": "NOT_READY",
+    "gateB": "BLOCKED",
+    "b05": "PLANNED_BLOCKED_GATE_A",
+    "b06": "PLANNED_BLOCKED_GATE_A",
+    "productVerified": false,
+    "tenantGoLiveAccepted": false,
+    "realEvPassCount": 0,
+    "ownerGateAAuthorization": null
+  },
+  "immutableBaseline": {
+    "productSnapshotSha": "eb9c4b04e334530367b80ea4178edb4dd4a07491",
+    "acceptanceRecordSha": "e47c3feb44c02a0fdf46c35f6c4b2f57c4365470"
+  }
+}
