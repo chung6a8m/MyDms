@@ -1,6 +1,8 @@
 # B04 Gate A — Closeout & restricted evidence intake
 
-**State on 14/11/2026: `NOT_READY`.** Owner selected [Q08 option B — distinct Gate A safety vs Gate B TADR reviews](../decisions/2026-11-14-q08-gate-a-gate-b-scoped-review.vi.md). The selection is a policy decision, **not a signed Gate A authorization**. Upstream Product C′ `eb9c4b04e334530367b80ea4178edb4dd4a07491` and Acceptance R `e47c3feb44c02a0fdf46c35f6c4b2f57c4365470` are immutable.
+**Update 15/11/2026:** Owner đã chọn AWS S3 tại [Q-GA01](../decisions/2026-11-15-q-ga01-aws-evidence-store-provider.vi.md), nhưng account/region/budget/retention/actual reviewer/provisioning vẫn chờ. Xem [AWS Owner intake](b04-aws-deployment-intake.vi.md). **Gate A vẫn `NOT_READY`; B05/B06 blocked.**
+
+**Historical state 14/11/2026: `NOT_READY`.** Owner selected [Q08 option B — distinct Gate A safety vs Gate B TADR reviews](../decisions/2026-11-14-q08-gate-a-gate-b-scoped-review.vi.md). The selection is a policy decision, **not a signed Gate A authorization**. Upstream Product C′ `eb9c4b04e334530367b80ea4178edb4dd4a07491` and Acceptance R `e47c3feb44c02a0fdf46c35f6c4b2f57c4365470` are immutable.
 
 ## What is implemented
 
