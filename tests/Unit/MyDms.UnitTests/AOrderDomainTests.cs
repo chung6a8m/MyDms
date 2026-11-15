@@ -91,8 +91,8 @@ public sealed class AOrderDomainTests
         Assert.Equal(100_000m, delivery.ProjectedReceivableVnd);
         Assert.Equal(new DateOnly(2026, 11, 22), delivery.DueDate);
         Assert.Equal("terms-v1", order.TermsSnapshot!.PolicyVersion);
-        Assert.Equal("pricing-v1", order.Lines.Single().ConfirmedTotalPayableVnd == 100_000m
-            ? "pricing-v1" : replacementPrice.CommercialPolicyVersion);
+        Assert.Equal(100_000m, order.Lines.Single().ConfirmedTotalPayableVnd);
+        Assert.Equal(500_000m, replacementPrice.TotalPayableVnd);
     }
 
     [Fact]
